@@ -51,14 +51,17 @@ class View extends Component<ViewProps> {
 
     const { isInAParentText } = this.context;
 
+    supportedProps.className = 'ui-view';
     supportedProps.style = StyleSheet.compose(
-      styles.initial,
-      StyleSheet.compose(isInAParentText && styles.inline, this.props.style)
+      isInAParentText && styles.inline,
+      this.props.style
     );
 
     if (hitSlop) {
       const hitSlopStyle = calculateHitSlopStyle(hitSlop);
-      const hitSlopChild = createElement('span', { style: [styles.hitSlop, hitSlopStyle] });
+      const hitSlopChild = createElement('span', {
+        style: [StyleSheet.absoluteFill, styles.hitSlop, hitSlopStyle]
+      });
       supportedProps.children = React.Children.toArray([hitSlopChild, supportedProps.children]);
     }
 
@@ -67,29 +70,12 @@ class View extends Component<ViewProps> {
 }
 
 const styles = StyleSheet.create({
-  // https://github.com/facebook/css-layout#default-values
-  initial: {
-    alignItems: 'stretch',
-    borderWidth: 0,
-    borderStyle: 'solid',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 0,
-    padding: 0,
-    position: 'relative',
-    zIndex: 0,
-    // fix flexbox bugs
-    minHeight: 0,
-    minWidth: 0
-  },
   inline: {
     display: 'inline-flex'
   },
   // this zIndex-ordering positions the hitSlop above the View but behind
   // its children
   hitSlop: {
-    ...StyleSheet.absoluteFillObject,
     zIndex: -1
   }
 });
